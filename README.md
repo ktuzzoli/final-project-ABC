@@ -1,2 +1,2 @@
 # final-project-ABC
-Created by Kasia T. and Joecher Y.
+Created by Kasia T. and Chiachi Y.
