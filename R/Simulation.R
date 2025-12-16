@@ -113,3 +113,27 @@ generate_abc_sample <- function(observed_data_vector,
     }
   }
 }
+
+#-------------------------------------------------------------------------------
+## Run Analysis
+set.seed(42) #ensures reproducibility
+# target_matrix: The real data we are trying to match
+# n_samples: The target size of the posterior distribution
+# epsilon: The error tolerance
+abc_analysis <- function(target_matrix, n_samples=1000, epsilon=20) {
+  # Capture Population Structure: replicate the exact same community structure to make a fair comparison
+  local_hh_sizes <- get_household_sizes(target_matrix)
+  # Simulate for every household in the list
+  gen_func <- function(qc, qh) {
+    sapply(local_hh_sizes, simulate_household, qh=qh, qc=qc)
+  }
+  obs_stats <- as.vector(target_matrix)
+  # forces the simulated data into the exact same shape
+  # Define Summary Statistic
+  sum_stat_func <- function(sim_data) {
+    tab <- table(
+      factor(sim_data, levels = 0:(nrow(target_matrix)-1)),
+      factor(local_hh_sizes, levels = 1:ncol(target_matrix))
+    )
+    return(as.vector(tab))
+  }
