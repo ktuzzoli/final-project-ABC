@@ -137,3 +137,24 @@ abc_analysis <- function(target_matrix, n_samples=1000, epsilon=20) {
     )
     return(as.vector(tab))
   }
+  
+#------------------------------------------------------------------------------- 
+  # Run ABC
+  # find one valid pair of (qc, qh) that fits the data
+  # repeats this process n times
+  # generates the posterior distribution
+  posterior_results <- replicate(n = n_samples, 
+                                 generate_abc_sample(
+                                   observed_data_vector = obs_stats,
+                                   summary_statistic_fn = sum_stat_func,
+                                   prior_distribution_fn = prior_distribution,
+                                   data_generating_fn = gen_func,
+                                   epsilon = epsilon
+                                 ))
+  # Transpose to data frame.
+  df <- data.frame(t(posterior_results))
+  colnames(df) <- c("qc", "qh")
+  return(df)
+}
+
+
